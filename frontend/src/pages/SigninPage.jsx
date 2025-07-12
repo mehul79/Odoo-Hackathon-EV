@@ -72,7 +72,7 @@ const SigninPage = () => {
               <LogIn className="w-8 h-8 text-[#2A3B7D]" />
             </div>
             <h1 className="text-2xl font-bold text-[#2A3B7D]">Welcome Back</h1>
-            <p className="text-gray-500">Log in to your CivicSentinel account</p>
+            <p className="text-gray-500">Log in to your QForum account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">

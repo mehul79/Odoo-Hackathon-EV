@@ -20,7 +20,7 @@ function App() {
     <Router>
       <Layout>
         <Routes><Route path="/" element={<Home />} />
-          <Route path="/home" element={<HomePage />} />
+          {/* <Route path="/home" element={<HomePage />} /> */}
           <Route path="/questions/:id" element={<ViewPost />} />
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/signup" element={<SignupPage />} />
