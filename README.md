@@ -8,8 +8,8 @@ com m unity.
 - Shikhar Saxsena
   - Email - saxena.shikhar1808@gmail.com
 - Priya Sharma 
- - Email - psharma13_be23@thapar.edu
+  - Email - psharma13_be23@thapar.edu
 - Vaibhav Sundriyal
   - Email - sundriyal.vaibhav11@gmail.com
 - Mehul Gupta 
- - Email - mehulrgupta@gmail.com
+  - Email - mehulrgupta@gmail.com
