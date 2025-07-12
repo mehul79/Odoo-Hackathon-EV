@@ -8,11 +8,10 @@ const NotificationPage = () => {
 
   const handleNotificationClick = async (notif) => {
     try {
-      await axios.post(`http://localhost:3001/notifications/${notif._id}/read`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.post(
+        `http://localhost:8000/notifications/${notif._id}/read`,{},
+        {withCredentials:true}
+      );
 
       setNotifications((prev) =>
         prev.map((n) => (n._id === notif._id ? { ...n, isRead: true } : n))
@@ -25,34 +24,18 @@ const NotificationPage = () => {
   };
 
   useEffect(() => {
-    // Replace with actual API call
-    const sample = [
-      {
-        _id: "6871f304f326423f5b06627e",
-        user: "6871f20ff326423f5b066261",
-        type: "reply",
-        link: "/questions/6871f217f326423f5b066264",
-        isRead: false,
-        createdAt: "2025-07-12T05:30:44.318Z",
-      },
-      {
-        _id: "6871f304f326423f5b06627e",
-        user: "6871f20ff326423f5b066261",
-        type: "reply",
-        link: "/questions/6871f217f326423f5b066264",
-        isRead: false,
-        createdAt: "2025-07-12T05:30:44.318Z",
-      },
-      {
-        _id: "6871f304f326423f5b06627e",
-        user: "6871f20ff326423f5b066261",
-        type: "reply",
-        link: "/questions/6871f217f326423f5b066264",
-        isRead: false,
-        createdAt: "2025-07-12T05:30:44.318Z",
-      },
-    ];
-    setNotifications(sample);
+    const fetchNotifications = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/notifications", {
+          withCredentials: true,
+        });
+        setNotifications(res.data);
+      } catch (err) {
+        console.error("Failed to fetch notifications", err);
+      }
+    };
+
+    fetchNotifications();
   }, []);
 
   return (
@@ -82,14 +65,16 @@ const NotificationPage = () => {
                     {notif.type === "vote" && (
                       <span>⬆️ Your reply got a new vote</span>
                     )}
-                    {/* Add more types here */}
+                    {/* Add more types if needed */}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     {new Date(notif.createdAt).toLocaleString()}
                   </p>
                 </div>
                 {!notif.isRead && (
-                  <span className="text-xs text-blue-400 font-semibold mt-1">New</span>
+                  <span className="text-xs text-blue-400 font-semibold mt-1">
+                    New
+                  </span>
                 )}
               </div>
             </li>
