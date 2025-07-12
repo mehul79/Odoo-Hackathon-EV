@@ -36,8 +36,8 @@ const START_PORT = 8000;
 app.use(cors(
     {
       // origin:["https://www.backslashtiet.com","https://backslashtiet.com"],
-    // origin:"http://localhost:5174",
-    origin:"*",
+    origin:"http://localhost:5173",
+    // origin:"*",
     methods:["POST","GET","PUT","PATCH"],
     credentials: true // Allow cookies to be sent with the request
   }
