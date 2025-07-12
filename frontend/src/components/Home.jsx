@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPenToSquare,
@@ -8,47 +8,83 @@ import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 
-import Header from './header';
+// import Header from './header';
 import PostCard from './postcard';
+import axios from 'axios';
 
 export default function Home() {
-  const [tags, setTags] = useState([
-    'Entertainment', 'Science', 'Technology', 'Mathematics', 'Education',
-    'Lifestyle', 'History', 'Logic & Puzzles', 'CBSE'
-  ]);
-  const [newTag, setNewTag] = useState('');
+  const [newTag, setNewTag] = useState("");
+  const [tags, setTags] = useState([]);
+  const [posts, setPosts] = useState([])
 
-  const posts = [
-    {
-      _id: "68720662efb1246375a4bc4b",
-      user: { _id: "6871f22af326423f5b066268", username: "vaibhav" },
-      title: "What is unga bunga atlas?",
-      description: "I want to understand document databases.",
-      images: [],
-      tags: ["mongodb", "database"],
-      createdAt: "2025-07-12T06:53:22.988Z",
-    },
-    {
-      _id: "68720491a098acd87ecae9f8",
-      user: { _id: "6871f22af326423f5b066268", username: "vaibhav" },
-      title: "What is mongodb atlas?",
-      description: "I want to understand document databases.",
-      images: [
-        "https://res.cloudinary.com/dicsxtvo5/image/upload/v1752302737/question-images/f7ol1l4wikalj0bpgych.jpg"
-      ],
-      tags: ["mongodb", "database"],
-      createdAt: "2025-07-12T06:45:37.746Z",
-    },
-    {
-      _id: "6871f217f326423f5b066264",
-      user: { _id: "6871f20ff326423f5b066261", username: "shikhar" },
-      title: "What is MongoDB?",
-      description: "I want to understand document databases.",
-      images: [],
-      tags: ["mongodb", "database"],
-      createdAt: "2025-07-12T05:26:47.184Z",
-    }
+  const sampleTags = [
+    "Entertainment", "Science", "Technology", "Mathematics", "Education",
+    "Lifestyle", "History", "Logic & Puzzles", "CBSE"
   ];
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/tags");
+        setTags(res.data);
+      } catch (err) {
+        console.error("Error fetching tags:", err);
+      }
+    };
+    fetchTags();
+  }, []);
+
+  // const samplePosts = [
+  //   {
+  //     _id: "68720662efb1246375a4bc4b",
+  //     user: { _id: "6871f22af326423f5b066268", username: "vaibhav" },
+  //     title: "What is unga bunga atlas?",
+  //     description: "I want to understand document databases.",
+  //     images: [],
+  //     tags: ["mongodb", "database"],
+  //     createdAt: "2025-07-12T06:53:22.988Z",
+  //   },
+  //   {
+  //     _id: "68720491a098acd87ecae9f8",
+  //     user: { _id: "6871f22af326423f5b066268", username: "vaibhav" },
+  //     title: "What is mongodb atlas?",
+  //     description: "I want to understand document databases.",
+  //     images: [
+  //       "https://res.cloudinary.com/dicsxtvo5/image/upload/v1752302737/question-images/f7ol1l4wikalj0bpgych.jpg"
+  //     ],
+  //     tags: ["mongodb", "database"],
+  //     createdAt: "2025-07-12T06:45:37.746Z",
+  //   },
+  //   {
+  //     _id: "6871f217f326423f5b066264",
+  //     user: { _id: "6871f20ff326423f5b066261", username: "shikhar" },
+  //     title: "What is MongoDB?",
+  //     description: "I want to understand document databases.",
+  //     images: [],
+  //     tags: ["mongodb", "database"],
+  //     createdAt: "2025-07-12T05:26:47.184Z",
+  //   }
+  // ];
+  // useEffect(() => {
+  //   setPosts(samplePosts);
+  // }, []);
+
+  useEffect(() => {
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/questions");
+      const data = await res.json();
+      setPosts(data);
+    } catch (err) {
+      console.error("Failed to fetch posts. Using sample data.");
+      setPosts(samplePosts);
+    }
+  };
+
+  fetchPosts();
+}, []);
+
+  console.log(posts)
 
   const removeTag = (tagToRemove) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
@@ -61,10 +97,11 @@ export default function Home() {
     }
   };
 
+
   return (
     <div className="bg-[#0f0f0f] text-white min-h-screen font-sans text-sm overflow-x-hidden">
       <div className="sticky top-0 z-50 bg-[#0f0f0f] border-b border-[#2a2a2a]">
-        <Header />
+        {/* <Header /> */}
       </div>
       <aside className="w-[260px] bg-[#0f0f0f] h-screen fixed top-0 left-0 border-r border-[#2a2a2a] flex flex-col justify-between z-40">
         <div className="p-4 space-y-3">

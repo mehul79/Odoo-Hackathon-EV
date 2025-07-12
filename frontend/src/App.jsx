@@ -10,6 +10,7 @@ import NotificationPage from './components/Notifications'
 import SignupPage from './pages/SignupPage';
 import SigninPage from './pages/SigninPage';
 import HomePage from './pages/HomePage';
+import Home from './components/Home';
 import Temp from './pages/Temp';
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
   return (
     <Router>
       <Layout>
-        <Routes>
+        <Routes><Route path="/" element={<Home />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/questions/:id" element={<ViewPost />} />
           <Route path="/notifications" element={<NotificationPage />} />
