@@ -35,14 +35,6 @@ Looking forward to your response.`,
     downvotes: 2,
     userVote: null, // null, 'up', or 'down'
   },
-  labels: ["untriaged"],
-  metadata: {
-    assignees: [],
-    type: null,
-    projects: [],
-    milestone: null,
-    relationships: [],
-  },
 }
 
 // Sample comments data with nested structure
