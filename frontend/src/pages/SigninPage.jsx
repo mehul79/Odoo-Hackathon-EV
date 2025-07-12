@@ -51,7 +51,7 @@ const SigninPage = () => {
       if (res.data.err) {
         setLoginError(res.data.err)
       } else if (res.data.redirect) {
-        navigate("/" + res.data.redirect)
+        navigate("/")
       }
     } catch (err) {
       console.error(err)
