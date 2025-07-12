@@ -1,0 +1,88 @@
+/* Enhanced scrolling styles for TipTap editor */
+.ProseMirror {
+  outline: none;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+  min-height: 300px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Ensure horizontal scrolling for wide content */
+.ProseMirror pre,
+.ProseMirror code {
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.ProseMirror table {
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
+
+/* Custom scrollbar styling */
+.overflow-auto::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.overflow-auto::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Ensure modal content scrolls properly */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-body {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Tags container scrolling */
+.tags-container {
+  max-height: 120px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Rich text editor specific scrolling */
+.editor-content {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.editor-content .ProseMirror {
+  min-width: 100%;
+  width: max-content;
+}
+
+/* Responsive scrolling adjustments */
+@media (max-width: 768px) {
+  .overflow-auto::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+}
