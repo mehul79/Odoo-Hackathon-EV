@@ -6,6 +6,10 @@ import viteLogo from '/vite.svg'
 // import './App.css'
 import Layout from './components/Layout'
 import ViewPost from './components/ViewPost'
+import SignupPage from './pages/SignupPage';
+import SigninPage from './pages/SigninPage';
+import HomePage from './pages/HomePage';
+import Temp from './pages/Temp';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,7 +18,11 @@ function App() {
     <Router>
       <Layout>
         <Routes>
+          <Route path="/home" element={<HomePage />} />
           <Route path="/questions/:id" element={<ViewPost />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signin" element={<SigninPage />} />
+          <Route path="/test" element={<Temp />} />
         </Routes>
       </Layout>
     </Router>
