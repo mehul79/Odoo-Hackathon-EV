@@ -156,7 +156,7 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-around text-white text-base border-t border-gray-700 pt-3">
-                <button className="hover:text-purple-400 flex items-center gap-2">
+                <button className="hover:text-purple-400 flex items-center gap-2" href='/test'>
                   <FontAwesomeIcon icon={faPenToSquare} className="w-5 h-5" /> Ask
                 </button>
                 <span className="text-gray-500">|</span>

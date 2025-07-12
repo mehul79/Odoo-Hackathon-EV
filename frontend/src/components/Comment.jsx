@@ -18,6 +18,7 @@ const CommentComponent = ({
     currentUser,
     isAccepted
   }) => {
+    console.log("Rendering Comment:", comment._id)
     const isCollapsed = collapsedComments.has(comment._id)
     const shouldShowMore = depth >= maxDepth && comment.replies.length > 0
     const [loadingStates, setLoadingStates] = useState({});
@@ -36,7 +37,7 @@ const handleCommentVote = async (comment, type) => {
 
   setLoadingStates((prev) => ({
     ...prev,
-    [`commentVote_${commentId}`]: true,
+    [`commentVote_${comment._id}`]: true,
   }));
 
   try {
@@ -47,13 +48,14 @@ const handleCommentVote = async (comment, type) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true, // if your API requires cookies
       }
     );
 
     // Optionally update local vote count
     setCommentVotes((prev) => ({
       ...prev,
-      [commentId]: (prev[commentId] || 0) + (type === "up" ? 1 : -1),
+      [comment._id]: (prev[comment._id] || 0) + (type === "up" ? 1 : -1),
     }));
   } catch (err) {
     console.error("Vote failed:", err.response?.data || err.message);
@@ -65,7 +67,7 @@ const handleCommentVote = async (comment, type) => {
   } finally {
     setLoadingStates((prev) => ({
       ...prev,
-      [`commentVote_${commentId}`]: false,
+      [`commentVote_${comment._id}`]: false,
     }));
   }
 };

@@ -39,8 +39,8 @@ const NotificationPage = () => {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4 text-white">
-      <h1 className="text-2xl font-bold mb-6">Notifications</h1>
+    <div className=" pl-10 pr-10 bg-[#0f0f0f] min-h-screen mx-auto text-white">
+      <h1 className="  pt-10 text-2xl font-bold mb-6">Notifications</h1>
 
       {notifications.length === 0 ? (
         <p className="text-gray-400">You're all caught up 🎉</p>

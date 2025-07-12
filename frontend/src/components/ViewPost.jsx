@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import axios from "axios"
 import { useParams } from "react-router-dom";
+import DOMPurify from 'dompurify';
+
 
 import reactLogo from '../assets/react.svg'
 import {
@@ -299,7 +301,9 @@ const ViewPost = () => {
           </div>
 
           <div className="p-4 leading-relaxed">
-            <div className="whitespace-pre-line">{post.description}</div>
+            {/* <div className="whitespace-pre-line">{post.description}</div> */}
+            <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} />
+
 
             {/* Voting Section */}
             {/* <div className="flex gap-2 mt-6 pt-4 border-t border-gray-600">

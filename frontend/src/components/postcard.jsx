@@ -17,7 +17,7 @@ export default function PostCard({ post }) {
   });
 
   return (
-    <div className="bg-[#1a1a1a] text-white rounded-3xl shadow-xl px-6 pt-4 pb-3 mb-8 w-full max-w-[640px] mx-auto"
+    <div className="bg-[#1a1a1a] text-white rounded-3xl shadow-xl px-6 pt-4 pb-3 mb-8 w-full max-w-[640px] mx-auto cursor-pointer hover:shadow-2xl transition-shadow duration-300"
     onClick={() => navigate(`/questions/${post._id}`)}>
       {/* Top user info */}
       <div className="flex items-center justify-between text-[11px] text-gray-400 mb-3">
