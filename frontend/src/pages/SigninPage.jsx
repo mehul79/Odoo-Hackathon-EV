@@ -42,7 +42,11 @@ const SigninPage = () => {
     }
 
     try {
-      const res = await api.post("/login", { email, password })
+      const res = await api.post(
+        "/login",
+        { email, password },
+        { withCredentials: true }
+      )
 
       if (res.data.err) {
         setLoginError(res.data.err)
