@@ -23,8 +23,8 @@ const CommentComponent = ({
     const [loadingStates, setLoadingStates] = useState({});
     const votes = getCommentVotes(comment)
     console.log("Comment Votes:", votes)
-    const isVoting = loadingStates[`commentVote_${comment.id}`]
-    const isReplying = loadingStates[`reply_${comment.id}`]
+    const isVoting = loadingStates[`commentVote_${comment._id}`]
+    const isReplying = loadingStates[`reply_${comment._id}`]
 
 
 const handleCommentVote = async (comment, type) => {
