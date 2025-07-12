@@ -56,17 +56,33 @@ export const createQuestion = async (req, res) => {
             const uploadResults = await Promise.all(uploadPromises);
             images = uploadResults.map(upload => upload.secure_url);
 
-            // Delete local files
             req.files.forEach(file => fs.unlinkSync(file.path));
         }
 
         const newQuestion = await Question.create({
             title,
             description,
-            tags: tags.split(",").map(t => t.trim()),
+            tags: Array.isArray(tags) ? tags : tags.split(",").map(t => t.trim()),
             images,
             user: userId
         });
+
+        // 🔔 Notify mentioned users
+        const mentionedUsernames = description.match(/@(\w+)/g);
+        if (mentionedUsernames) {
+            for (const mention of mentionedUsernames) {
+                const username = mention.slice(1);
+                const mentionedUser = await User.findOne({ username });
+                if (mentionedUser && mentionedUser._id.toString() !== userId.toString()) {
+                    await Notification.create({
+                        user: mentionedUser._id,
+                        type: "mention",
+                        message: `You were mentioned in a question.`,
+                        link: `/questions/${newQuestion._id}`
+                    });
+                }
+            }
+        }
 
         res.json(newQuestion);
     } catch (err) {
@@ -165,15 +181,11 @@ export const postReply = async (req, res) => {
         let parentId = null;
 
         if (paramId && paramId.startsWith("replies")) {
-            // Nested reply to another reply
             parentId = paramId.replace("replies/", "");
             const parentReply = await Reply.findById(parentId);
-            if (!parentReply) {
-                return res.status(404).json({ err: "Parent reply not found" });
-            }
+            if (!parentReply) return res.status(404).json({ err: "Parent reply not found" });
             questionId = parentReply.question;
         } else {
-            // Top-level reply
             questionId = paramId || bodyQuestionId;
             parentId = null;
         }
@@ -208,6 +220,23 @@ export const postReply = async (req, res) => {
                     message: `Someone replied to your comment.`,
                     link: `/questions/${parentReply.question}#reply-${reply._id}`
                 });
+            }
+        }
+
+        // 🔔 Notify mentioned users in reply
+        const mentionedUsernames = content.match(/@(\w+)/g);
+        if (mentionedUsernames) {
+            for (const mention of mentionedUsernames) {
+                const username = mention.slice(1);
+                const mentionedUser = await User.findOne({ username });
+                if (mentionedUser && mentionedUser._id.toString() !== userId.toString()) {
+                    await Notification.create({
+                        user: mentionedUser._id,
+                        type: "mention",
+                        message: `You were mentioned in a reply.`,
+                        link: `/questions/${questionId}#reply-${reply._id}`
+                    });
+                }
             }
         }
 
