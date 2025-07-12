@@ -266,7 +266,7 @@ const ViewPost = () => {
   if (!post) return null
 
   return (
-    <div className="flex mx-auto p-5 gap-6 bg-gray-900 text-gray-100 font-sans min-h-screen lg:flex-row flex-col">
+    <div className="flex mx-auto p-5 gap-6 bg-[#0D1117] text-gray-100 font-sans min-h-screen lg:flex-row flex-col">
       <div className="flex-1 lg:max-w-[calc(100%-320px)] max-w-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-4 flex-col sm:flex-row gap-4 sm:gap-0">
@@ -285,7 +285,7 @@ const ViewPost = () => {
 
         {/* Post Content */}
         <div className="border border-gray-600 rounded-lg mb-6">
-          <div className="flex items-center p-4 border-b border-gray-600 bg-gray-800 rounded-t-lg">
+          <div className="flex items-center p-4 border-b border-gray-600 bg-[#151B23] rounded-t-lg">
             <img src={reactLogo} alt="Author" className="w-10 h-10 rounded-full mr-3" />
             <div className="flex-1">
               <span className="font-semibold text-gray-100 mr-2">{post.user.username}</span>
@@ -350,7 +350,7 @@ const ViewPost = () => {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Add a comment..."
-                  className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-sm text-white resize-y focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full p-3 bg-[#151B23] border border-gray-700 rounded-md text-sm text-white resize-y focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   rows="3"
                 />
                 <div className="mt-2 flex justify-end">

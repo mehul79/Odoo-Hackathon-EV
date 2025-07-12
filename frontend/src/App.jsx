@@ -6,6 +6,7 @@ import viteLogo from '/vite.svg'
 // import './App.css'
 import Layout from './components/Layout'
 import ViewPost from './components/ViewPost'
+import NotificationPage from './components/Notifications'
 import SignupPage from './pages/SignupPage';
 import SigninPage from './pages/SigninPage';
 import HomePage from './pages/HomePage';
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/home" element={<HomePage />} />
           <Route path="/questions/:id" element={<ViewPost />} />
+          <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/signin" element={<SigninPage />} />
           <Route path="/test" element={<Temp />} />

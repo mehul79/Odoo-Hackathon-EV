@@ -124,6 +124,36 @@ export const deleteQuestion = async (req, res) => {
     }
 };
 
+// Get all unique tags from questions
+export const getAllTags = async (req, res) => {
+    try {
+        const tags = await Question.distinct("tags");
+        res.json(tags);
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+};
+
+// Get questions that contain specified tag(s)
+export const getQuestionsByTags = async (req, res) => {
+    try {
+        const { tags } = req.query; // Example: ?tags=react,nodejs
+
+        if (!tags) {
+            return res.status(400).json({ err: "Tags query is required" });
+        }
+
+        const tagArray = tags.split(',').map(tag => tag.trim().toLowerCase());
+
+        const questions = await Question.find({ tags: { $in: tagArray } })
+            .sort({ createdAt: -1 });
+
+        res.json(questions);
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+};
+
 // 💬 Replies
 export const postReply = async (req, res) => {
     try {

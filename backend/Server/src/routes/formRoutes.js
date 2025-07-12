@@ -6,6 +6,9 @@ import {
     updateQuestion,
     deleteQuestion,
 
+    getAllTags,
+    getQuestionsByTags,
+
     postReply,
     getRepliesByQuestion,
     getRepliesByReply,
@@ -62,6 +65,8 @@ router.get("/questions", getAllQuestions);
 router.get("/questions/:id", getQuestionById);
 router.put("/questions/:id", authenticateToken, updateQuestion);
 router.delete("/questions/:id", authenticateToken, deleteQuestion);
+router.get('/tags', getAllTags); // Public: Get all unique tags
+router.get('/tagged', getQuestionsByTags); 
 
 // 💬 Replies (Nested)
 router.post("/questions/:id/replies", authenticateToken, postReply); // top-level
