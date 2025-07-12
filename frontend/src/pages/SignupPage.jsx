@@ -1,13 +1,13 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
-import { Shield, Upload, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { FooterSmall } from "@/components/FooterSmall";
 import { api } from "@/lib/api";
+import PropTypes from "prop-types";
 
 // Schema
 const signupSchema = z.object({
@@ -17,12 +17,15 @@ const signupSchema = z.object({
   phone: z.string().min(1, "Phone required"),
   address: z.string().min(1, "Address required"),
   signature: z
-    .instanceof(File, { message: "Signature is required" })
+    .any()
     .refine(
       (file) =>
-        ["image/jpeg", "image/png", "application/pdf"].includes(file.type),
-      "Allowed formats: JPG, PNG, PDF"
-    ),
+        !file ||
+        (file instanceof File &&
+          ["image/jpeg", "image/png", "application/pdf"].includes(file.type)),
+      { message: "Allowed formats: JPG, PNG, PDF" }
+    )
+    .optional(),
 });
 
 export default function SignupPage() {
@@ -42,15 +45,6 @@ export default function SignupPage() {
   const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
-    console.log("=== DEBUG STATE ===");
-    console.log("formData:", formData);
-    console.log("status:", status);
-    console.log("errors:", errors);
-    console.log("previewUrl:", previewUrl);
-    console.log("==================");
-  }, [formData, status, errors, previewUrl]);
-
-  useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
@@ -63,12 +57,30 @@ export default function SignupPage() {
     }
   };
 
+  const handleInputBlur = (field) => {
+    try {
+      const fieldSchema = signupSchema.shape[field];
+      if (fieldSchema) {
+        fieldSchema.parse(formData[field]);
+        if (errors[field]) {
+          setErrors((prev) => ({ ...prev, [field]: "" }));
+        }
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldError = error.errors.find((err) => err.path[0] === field);
+        if (fieldError) {
+          setErrors((prev) => ({ ...prev, [field]: fieldError.message }));
+        }
+      }
+    }
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-
     setFormData((prev) => ({ ...prev, signature: file }));
     setPreviewUrl(URL.createObjectURL(file));
 
@@ -104,9 +116,8 @@ export default function SignupPage() {
     try {
       setStatus("loading");
 
-      // Mapping note: The username field in the payload corresponds to the front-end label "Name"
       const payload = {
-        username: formData.name.trim(), // backend uses 'username' key
+        username: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password,
       };
@@ -129,8 +140,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      
-
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <form className="w-full max-w-4xl" onSubmit={handleSubmit}>
           <div className="bg-white shadow-xl rounded-lg p-8 flex gap-8">
@@ -155,15 +164,18 @@ export default function SignupPage() {
                       type={field === "password" ? "password" : "text"}
                       value={formData[field]}
                       onChange={(e) => handleInputChange(field, e.target.value)}
+                      onBlur={() => handleInputBlur(field)}
                       className={cn(
-                        "w-full",
-                        errors[field] && "border-red-500"
+                        "w-full transition-colors duration-200",
+                        errors[field]
+                          ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                          : "border-gray-300 focus:border-[#2A3B7D] focus:ring-[#2A3B7D]/20"
                       )}
                       placeholder={
                         field === "email" ? "john.doe@example.com" : ""
                       }
                     />
-                    <ErrorMsg message={errors[field]} />
+                    {errors[field] && <ErrorMsg message={errors[field]} />}
                   </div>
                 )
               )}
@@ -172,13 +184,16 @@ export default function SignupPage() {
             <div className="flex-1 space-y-8 flex flex-col">
               <div>
                 <Label htmlFor="signature" className="block mb-4">
-                  Signature (JPG, PNG, or PDF)
+                  Signature (Optional - JPG, PNG, or PDF)
                 </Label>
                 <div
                   className={cn(
-                    "border-2 border-dashed rounded-md p-4 text-center cursor-pointer hover:bg-gray-50",
-                    errors.signature ? "border-red-500" : "border-gray-300",
-                    formData.signature && "border-green-500 bg-green-50"
+                    "border-2 border-dashed rounded-md p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors duration-200",
+                    errors.signature
+                      ? "border-red-500 bg-red-50"
+                      : formData.signature
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300"
                   )}
                 >
                   <input
@@ -215,7 +230,7 @@ export default function SignupPage() {
                       <div className="flex flex-col items-center">
                         <Upload className="h-12 w-12 text-gray-400 mb-2" />
                         <span className="text-sm text-gray-700">
-                          Click to upload your signature
+                          Click to upload your signature (optional)
                         </span>
                         <span className="text-xs text-gray-500">
                           JPG, PNG, or PDF
@@ -249,15 +264,15 @@ export default function SignupPage() {
                   </button>
                 </p>
 
-{errors.form && (
-  <div className="bg-red-100 border border-red-300 text-red-700 p-3 rounded text-sm flex items-center">
-    <AlertCircle className="w-4 h-4 mr-2" />
-    {errors.form}
-  </div>
-)}
-{status === "error" && (
-  <Alert message="A network error occurred. Please try again." />
-)}
+                {errors.form && (
+                  <div className="bg-red-100 border border-red-300 text-red-700 p-3 rounded text-sm flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-2" />
+                    {errors.form}
+                  </div>
+                )}
+                {status === "error" && (
+                  <Alert message="A network error occurred. Please try again." />
+                )}
                 {status === "success" && (
                   <Success message="Account created successfully! You can now log in." />
                 )}
@@ -272,11 +287,17 @@ export default function SignupPage() {
 
 const ErrorMsg = ({ message }) =>
   message ? (
-    <p className="text-red-500 text-sm mt-1 flex items-center">
-      <AlertCircle className="h-4 w-4 mr-1" />
-      {message}
-    </p>
+    <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-md">
+      <p className="text-red-600 text-sm flex items-center">
+        <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+        {message}
+      </p>
+    </div>
   ) : null;
+
+ErrorMsg.propTypes = {
+  message: PropTypes.string,
+};
 
 const Alert = ({ message }) => (
   <div className="p-3 bg-red-100 border border-red-300 rounded-md text-red-700 text-sm">
@@ -287,6 +308,10 @@ const Alert = ({ message }) => (
   </div>
 );
 
+Alert.propTypes = {
+  message: PropTypes.string.isRequired,
+};
+
 const Success = ({ message }) => (
   <div className="p-3 bg-green-100 border border-green-300 rounded-md text-green-700 text-sm">
     <p className="flex items-center">
@@ -295,3 +320,7 @@ const Success = ({ message }) => (
     </p>
   </div>
 );
+
+Success.propTypes = {
+  message: PropTypes.string.isRequired,
+};
