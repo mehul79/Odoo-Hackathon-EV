@@ -29,7 +29,11 @@ const CommentComponent = ({
 
 
 const handleCommentVote = async (comment, type) => {
-  const token = localStorage.getItem("token"); // assuming you store JWT in localStorage
+  if (!comment || !comment._id) {
+    console.error("Invalid comment object:", comment);
+    return;
+  }
+
   const endpoint =
     type === "up"
       ? `http://localhost:8000/replies/${comment._id}/upvote`
@@ -43,16 +47,10 @@ const handleCommentVote = async (comment, type) => {
   try {
     await axios.post(
       endpoint,
-      {}, // POST body (empty)
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true, // if your API requires cookies
-      }
+      {}, // empty body
+      { withCredentials: true }
     );
 
-    // Optionally update local vote count
     setCommentVotes((prev) => ({
       ...prev,
       [comment._id]: (prev[comment._id] || 0) + (type === "up" ? 1 : -1),
@@ -71,7 +69,6 @@ const handleCommentVote = async (comment, type) => {
     }));
   }
 };
-
 
     return (
       <div className={`${depth > 0 ? "ml-14 border-l border-gray-700 pl-6" : ""}`}>

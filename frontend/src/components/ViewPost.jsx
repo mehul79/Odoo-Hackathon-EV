@@ -177,14 +177,21 @@ const ViewPost = () => {
         content: newComment,
         postId: postId,
       }
-      await axios.post(`http://localhost:8000/questions/${postId}/replies`,{
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: sendData
-      });
+      await axios.post(`http://localhost:8000/questions/${postId}/replies`,
+        // headers: {
+        //   'Content-Type': 'application/json'
+        // },
+        sendData,
+        {withCredentials: true},
+      );
+
+      // const res = await api.post(
+      //         "http://localhost:8000/login",
+      //         { email, password },
+      //         { withCredentials: true }
+      //       )
       setNewComment("")
-      fetchComments()
+      // fetchComments()
     } catch (err) {
       console.error("Error adding comment:", err)
       console.log(err)
