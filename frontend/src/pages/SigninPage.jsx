@@ -43,7 +43,7 @@ const SigninPage = () => {
 
     try {
       const res = await api.post(
-        "/login",
+        "http://localhost:8000/login",
         { email, password },
         { withCredentials: true }
       )

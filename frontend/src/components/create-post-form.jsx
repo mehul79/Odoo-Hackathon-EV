@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { X, Loader2 } from "lucide-react";
 import { RichTextEditorDemo } from "./rich-text-editor";
-
+import axios from 'axios'
 const STORAGE_KEY = "draft-post";
 
 export function CreatePostForm({ onSubmit, isSubmitting }) {
@@ -15,6 +15,7 @@ export function CreatePostForm({ onSubmit, isSubmitting }) {
   const [content, setContent] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState([]);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Load draft from localStorage on component mount
   useEffect(() => {
@@ -35,7 +36,7 @@ export function CreatePostForm({ onSubmit, isSubmitting }) {
   useEffect(() => {
     const draft = {
       title,
-      content,
+      description: content,
       tags,
     };
 
@@ -61,6 +62,23 @@ export function CreatePostForm({ onSubmit, isSubmitting }) {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const postData = {
+  //     title,
+  //     content,
+  //     tags,
+  //     createdAt: new Date().toISOString(),
+  //   };
+
+  //   await onSubmit(postData);
+  // };
+
+  const handleContentChange = (newContent) => {
+    setContent(newContent);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,11 +89,30 @@ export function CreatePostForm({ onSubmit, isSubmitting }) {
       createdAt: new Date().toISOString(),
     };
 
-    await onSubmit(postData);
-  };
+    try {
+      // isSubmitting(true);
 
-  const handleContentChange = (newContent) => {
-    setContent(newContent);
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post("http://localhost:8000/questions", postData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      console.log("Post submitted successfully:", response.data);
+
+      localStorage.removeItem(STORAGE_KEY); // Clear draft after successful post
+      setTitle("");
+      setContent("");
+      setTags([]);
+      await onSubmit(postData);
+    } catch (error) {
+      console.error("Failed to submit post:", error);
+    } finally {
+      // isSubmitting(false);
+    }
   };
 
   return (
