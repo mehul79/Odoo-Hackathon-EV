@@ -84,15 +84,16 @@ export function CreatePostForm({ onSubmit, isSubmitting }) {
 
     const postData = {
       title,
-      content,
+      description:content,
       tags,
-      createdAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
     };
 
     try {
       // isSubmitting(true);
 
       const token = localStorage.getItem("token");
+      console.log(postData);
 
       const response = await axios.post("http://localhost:8000/questions", postData, {
         headers: {

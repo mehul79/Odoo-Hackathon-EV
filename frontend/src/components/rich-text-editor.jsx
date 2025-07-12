@@ -86,7 +86,7 @@ const extensions = [
   Typography,
 ]
 
-export function RichTextEditorDemo({ className, onChange, disabled }) {
+export function RichTextEditorDemo({ className, onChange, disabled,content="" }) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: extensions,
